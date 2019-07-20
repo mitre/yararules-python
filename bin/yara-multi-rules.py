@@ -60,12 +60,11 @@ def main(args):
         else:
             print(match.rule, match.namespace, filepath)
             if args.print_strings and match.strings:
-                for s in match.strings:
-                    print('0x%x:%s: %s' % (
-                        s[0],
-                        s[1],
-                        binascii.b2a_qp(s[2]).replace('=', '\\x')
-                        ))
+                for loc, var, s in match.strings:
+                    s = binascii.b2a_qp(s)
+                    s = s.decode('ascii')
+                    s = s.replace('=','\\x')
+                    print('0x%x:%s: %s' % (loc, var, s))
 
 if __name__ == '__main__':
     import argparse
