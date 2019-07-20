@@ -25,6 +25,25 @@ class FakeMatch(object):
     rule = None
     namespace = None
 
+
+def make_includes_callback():
+    """Ignore same file included twice within the same namespace"""
+    _included_files = dict()
+
+    def _includes_callback(requested_filename, filename, namespace):
+        # get full path
+        requested_filename = os.path.join(os.path.dirname(filename), requested_filename)
+        if namespace not in _included_files:
+            _included_files[namespace] = set()
+        if requested_filename in _included_files[namespace]:
+            return ""
+        with open(requested_filename, "r") as f:
+            sources = f.read()
+        _included_files[namespace].add(requested_filename)
+        return sources
+
+    return _includes_callback
+
 def make_externals(filepath='', filename='', fileext='', dirname='', base_externals=None):
     """Given a file name, extension, and dir OR a full file path string, return
     a dictionary suitable for the yara match() function externals argument.
@@ -91,12 +110,14 @@ def compile_files(rule_files, externals=None):
         compiled_rules = yara.compile(
             filepaths=rules,
             externals=make_externals(base_externals=externals),
+            include_callback=make_includes_callback(),
             error_on_warning=True
             )
     except yara.WarningError as e:
         compiled_rules = yara.compile(
             filepaths=rules,
-            externals=make_externals(base_externals=externals)
+            externals=make_externals(base_externals=externals),
+            include_callback=make_includes_callback(),
             )
         warnings.append('{}'.format(e))
     except yara.Error as e:
