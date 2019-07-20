@@ -45,7 +45,7 @@ def main(args):
             with open(lf, 'r') as fh:
                 for line in fh:
                     line = line.strip()
-                    if line:
+                    if line and not line.startswith('#'):
                         sigfiles.append(line)
     if args.csv:
         csv_writer = csv.writer(sys.stdout)
