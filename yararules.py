@@ -7,7 +7,7 @@ file into its own namespace to avoid rule name conflicts.
 https://github.com/MITRE/yararules-python
 
 
-Copyright (c) 2018, The MITRE Corporation. All rights reserved.
+Copyright (c) 2018-2020, The MITRE Corporation. All rights reserved.
 """
 
 

@@ -40,6 +40,6 @@ optional arguments:
 
 ## Copyright
 
-Copyright (c) 2018, The MITRE Corporation. All rights reserved.
+Copyright (c) 2018-2020, The MITRE Corporation. All rights reserved.
 
 Approved for Public Release; Distribution Unlimited. Case Number 18-0989
