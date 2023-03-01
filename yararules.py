@@ -16,6 +16,7 @@ from __future__ import print_function
 import os
 import sys
 import yara
+import magic
 
 
 class FakeMatch(object):
@@ -24,8 +25,9 @@ class FakeMatch(object):
     """
     rule = None
     namespace = None
+    strings = None
 
-def make_externals(filepath='', filename='', fileext='', dirname='', base_externals=None):
+def make_externals(filepath='', filename='', fileext='', dirname='', base_externals=None, include_type=False):
     """Given a file name, extension, and dir OR a full file path string, return
     a dictionary suitable for the yara match() function externals argument.
     If base_externals dictionary provided, then initialize the externals with it.
@@ -51,8 +53,13 @@ def make_externals(filepath='', filename='', fileext='', dirname='', base_extern
     # if no filename, but we have filepath
     if not filename and filepath:
         _, filename = os.path.split(filepath)
+    ftype = ''
+    if include_type:
+        m = magic.from_file(filepath)
+        if m:
+            ftype = m.split()[0]
     # update return dict with common externals when processing a file
-    d.update({'filepath': filepath, 'filename': filename, 'extension': fileext})
+    d.update({'filepath': filepath, 'filename': filename, 'extension': fileext, 'filetype': ftype})
     # return the computed externals
     return d
 

@@ -1,1 +1,2 @@
 yara-python
+python-magic
