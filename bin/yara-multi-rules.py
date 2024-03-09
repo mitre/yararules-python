@@ -60,11 +60,15 @@ def main(args):
         else:
             print(match.rule, match.namespace, filepath)
             if args.print_strings and match.strings:
-                for loc, var, s in match.strings:
-                    s = binascii.b2a_qp(s)
-                    s = s.decode('ascii')
-                    s = s.replace('=','\\x')
-                    print('0x%x:%s: %s' % (loc, var, s))
+                for sm in match.strings:
+                    for smi in sm.instances:
+                        s = binascii.b2a_qp(smi.plaintext())
+                        s = s.decode('ascii')
+                        s = s.replace('=','\\x')
+                        if sm.is_xor():
+                            print(f"0x{smi.offset:x}:{sm.identifier}: {s} (xor 0x{smi.xorkey:x})")
+                        else:
+                            print(f"0x{smi.offset:x}:{sm.identifier}: {s}")
 
 if __name__ == '__main__':
     import argparse
